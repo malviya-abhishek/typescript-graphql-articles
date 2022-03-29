@@ -20,22 +20,41 @@ export const UserLoginType = new GraphQLObjectType({
       token: {type: GraphQLString}
     }
   }
-})
+});
 
-      // resolve: UserLoginResolve
+export const UserDeleteType = new GraphQLObjectType({
+  name: 'UserDelete',
+  fields: ()=>{
+    return {
+      msg: {type: GraphQLString}
+    }
+  }
+});
 
 // Args
 export const UserArgs = {
   id: {type: new GraphQLNonNull(GraphQLID)}
-}
+};
 
 export const AddUserArgs = {
     name: {type: new GraphQLNonNull(GraphQLString)},
     email: {type: new GraphQLNonNull(GraphQLString)},
     password: {type: new GraphQLNonNull(GraphQLString)}
-}
+};
 
 export const UserLoginArgs = {
   email: {type: new GraphQLNonNull(GraphQLString)},
   password: {type: new GraphQLNonNull(GraphQLString)}
+};
+
+export const UpdateUserArgs = {
+  id: {type: new GraphQLNonNull(GraphQLID)},
+  token: {type: new GraphQLNonNull(GraphQLString)},
+  name: {type: GraphQLString},
+  password: {type: GraphQLString}
+}
+
+export const DeleteUserArgs = {
+  id: {type: new GraphQLNonNull(GraphQLID)},
+  token: {type: new GraphQLNonNull(GraphQLString)},
 }

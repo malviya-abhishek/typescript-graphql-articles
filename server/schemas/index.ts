@@ -1,6 +1,6 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLNonNull, GraphQLString, GraphQLList } from 'graphql';
-import { AddUserResolve, UsersResolve, UserLoginResolve, UserResolve } from '../resolves/user.resolve';
-import {UserType, AddUserArgs, UserLoginType, UserLoginArgs, UserArgs} from './user.schema'
+import { GraphQLObjectType, GraphQLSchema, GraphQLList } from 'graphql';
+import { AddUserResolve, UsersResolve, UserLoginResolve, UserResolve, UpdateUserResolve, DeleteUserResolve } from '../resolves/user.resolve';
+import {UserType, AddUserArgs, UserLoginType, UserLoginArgs, UserArgs, UpdateUserArgs, UserDeleteType, DeleteUserArgs} from './user.schema'
 
 
 const RootQuery = new GraphQLObjectType({
@@ -26,11 +26,21 @@ const Mutation = new GraphQLObjectType({
       args: AddUserArgs,
       resolve: AddUserResolve
     },
+    updateUser:{
+      type: UserType,
+      args: UpdateUserArgs,
+      resolve: UpdateUserResolve
+    },
+    deleteUser:{
+      type: UserDeleteType,
+      args: DeleteUserArgs,
+      resolve: DeleteUserResolve
+    },
     loginUser:{
       type: UserLoginType,
       args: UserLoginArgs,
       resolve: UserLoginResolve
-    }
+    },
   }  
 });
 
