@@ -29,7 +29,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     }
 
     validPassword(password : string) : boolean {
-      const hashedPassword = crypto.pbkdf2Sync(password, "salt", 10000, 100, 'sha512').toString('hex');;
+      const hashedPassword = crypto.pbkdf2Sync(password, "salt", 10000, 100, 'sha512').toString('hex');
       return this.password === hashedPassword;
     }
 
@@ -43,34 +43,32 @@ module.exports = (sequelize: any, DataTypes: any) => {
         exp: exp.getTime() / 1000,
       }, JWT_SECRET)
     }
-
   }
-  User.init({
-        id: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          primaryKey: true,
-          autoIncrement: true
-        },
-        name: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-        email: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          unique:  true,
-        },
-        password: {
-          type: DataTypes.STRING,
-          allowNull: false
-        }
 
-  }, 
-  {
-    sequelize, 
-    modelName: 'User',
-    
-  });
+  User.init({
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique:  true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }}, 
+    {
+      sequelize, 
+      modelName: 'User',   
+    }
+  );
   return User;
 };

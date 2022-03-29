@@ -11,6 +11,7 @@ import cors from 'cors'
 
 import db from './models';
 import schema from './schemas';
+// import validateJWT from './middleware/auth.middleware';
 
 const PORT = process.env.PORT || "4000";
 
@@ -23,7 +24,7 @@ const INIT = async () => {
         
         // MIDDLEWARE
         app.use(cors());
-
+        // app.use(validateJWT);
 
         app.use("/graphql", graphqlHTTP({
             schema: schema,
