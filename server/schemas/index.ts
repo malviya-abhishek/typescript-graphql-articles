@@ -1,5 +1,7 @@
 import { GraphQLObjectType, GraphQLSchema, GraphQLList } from 'graphql';
+import { AddArticleResolve, ArticleResolve, ArticlesResolve, UpdateArticleResolve, DeleteArticleResolve } from '../resolves/article.resolve';
 import { AddUserResolve, UsersResolve, UserLoginResolve, UserResolve, UpdateUserResolve, DeleteUserResolve } from '../resolves/user.resolve';
+import { AddArticleArgs, ArticleArgs, ArticleType, UpdateArticleArgs, DeleteArticleArgs, ArticleDeleteType } from './article.schema';
 import {UserType, AddUserArgs, UserLoginType, UserLoginArgs, UserArgs, UpdateUserArgs, UserDeleteType, DeleteUserArgs} from './user.schema'
 
 
@@ -14,6 +16,15 @@ const RootQuery = new GraphQLObjectType({
     users:{
       type: new GraphQLList(UserType),
       resolve: UsersResolve
+    },
+    article:{
+      type: ArticleType,
+      args: ArticleArgs,
+      resolve: ArticleResolve
+    },
+    articles:{
+      type: new GraphQLList(ArticleType),
+      resolve: ArticlesResolve
     }
   }
 });
@@ -21,6 +32,7 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name : "Mutation",
   fields : {
+    // Users
     addUser:{
       type: UserType,
       args: AddUserArgs,
@@ -40,6 +52,22 @@ const Mutation = new GraphQLObjectType({
       type: UserLoginType,
       args: UserLoginArgs,
       resolve: UserLoginResolve
+    },
+    // Articles
+    addArticle:{
+      type: ArticleType,
+      args: AddArticleArgs,
+      resolve: AddArticleResolve
+    },
+    updateArticle:{
+      type: ArticleType,
+      args: UpdateArticleArgs,
+      resolve: UpdateArticleResolve
+    },
+    deleteArticle:{
+      type: ArticleDeleteType,
+      args: DeleteArticleArgs,
+      resolve: DeleteArticleResolve
     },
   }  
 });

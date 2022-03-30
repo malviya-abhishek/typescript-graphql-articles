@@ -5,7 +5,7 @@ interface ArticleAttributes{
   id: number;
   title: string;
   content: string;
-  UserId: number
+  userId: number
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -14,14 +14,14 @@ module.exports = (sequelize: any, DataTypes: any) => {
     id!: number;
     title!: string;
     content!: string;
-    UserId!: number;
+    userId!: number;
 
     static associate(models: any) {
       Article.belongsTo(models.User, {onDelete: "cascade"});
     }
 
     validUser(userId: number) : boolean{
-      return this.UserId === userId;
+      return this.userId === userId;
     }
 
   }
@@ -40,7 +40,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    UserId: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references:{
