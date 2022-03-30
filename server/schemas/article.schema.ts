@@ -2,7 +2,7 @@ import { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLNonNull } from "gra
 import db from "../models";
 import { UserType } from "./user.schema";
 
-export const ArticleType = new GraphQLObjectType({
+export const ArticleType:any = new GraphQLObjectType({
   name: 'Article',
   fields: ()=>{
     return {

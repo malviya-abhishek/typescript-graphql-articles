@@ -1,13 +1,21 @@
-import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import db from "../models";
+import { ArticleType } from "./article.schema";
 
 // Types
-export const UserType = new GraphQLObjectType({
+export const UserType:any = new GraphQLObjectType({
   name: 'User',
   fields: ()=>{
     return {
       id: {type: GraphQLID},
       name: {type: GraphQLString},
       email: {type: GraphQLString},
+      articles:{
+        type: new GraphQLList(ArticleType),
+        resolve(parent, args){
+          return db.Article.findAll({where: {userId: parent.id}});
+        }
+      }
     }
   }
 });
