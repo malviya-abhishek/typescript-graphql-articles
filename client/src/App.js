@@ -40,7 +40,10 @@ function App() {
       <div className="App">
         <Navbar logged={logged} />
         <Routes>
+          
           <Route path="/" element={<ArticlePallet />} />
+
+
           <Route
             exact
             path="/profile"

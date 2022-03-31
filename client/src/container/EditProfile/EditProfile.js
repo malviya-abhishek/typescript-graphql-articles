@@ -2,23 +2,26 @@ import { useState, useEffect } from "react";
 import Form from "../../component/Form/Form";
 import axios from "../../axios";
 import {useNavigate} from 'react-router-dom';
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_USER, UPDATE_USER } from "../../queries/queries";
 
 function EditProfile(props){
     const navigate = useNavigate();
-    const [detail, setDetail] = useState({ name: "", email: "", password: ""});
-    const [error, setError] = useState("");
+    const [detail, setDetail] = useState({ name: "", password: ""});
+    const [Error, setError] = useState("");
 
-    useEffect( ()=>{
-        axios
-          .get(`/users/${props.userId}`, {
-          })
-          .then((result) => {
-            setDetail({ ...result.data, password: "" });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-    }, [props.userId]);
+    const { loading, error, data } = useQuery(GET_USER, { variables: { id: props.userId } });
+    const [userUpdateMutation] = useMutation(UPDATE_USER);
+
+    if(error){
+      console.log(error);
+    }
+
+    if(data){
+      if(detail.name.length === 0 )
+        setDetail({name: data.user.name, password: ""});
+    }
+
     
     function changeHandler(e) {
         const name = e.target.name;
@@ -28,20 +31,13 @@ function EditProfile(props){
 
     function uploadHandler(e) {
         e.preventDefault();
-        const data = {
-            name: detail.name,
-            email: detail.email,
-        };
+        const data = { name: detail.name};
 
         if(detail.password.length)
             data["password"] = detail.password
 
-        axios
-          .put(
-            `/users/${props.userId}`,
-            data,
-            { headers: { authorization: `Bearer ${localStorage.getItem("token")}`} }
-          )
+      
+        userUpdateMutation({variables: {id: props.userId, token: props.token, ...data }})
           .then((result) => {
             navigate(-1);
           })
@@ -53,7 +49,7 @@ function EditProfile(props){
 
     const options = {
         formTitle: "Update profile",
-        errorMsg: error,
+        errorMsg: Error,
         changeHandler: changeHandler,
         uploadHandler: uploadHandler,
         btnText: "update",

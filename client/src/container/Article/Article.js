@@ -1,32 +1,25 @@
 import {useLocation} from 'react-router-dom'
-import {useEffect, useState} from 'react';
-import axios from '../../axios'
 import classes from './Article.module.css'
 import Button from '../../component/Button/Button';
 import { useNavigate } from "react-router-dom";
-import { useQuery } from '@apollo/client';
-import { GET_ARTICLE } from '../../queries/queries';
+import { useMutation, useQuery } from '@apollo/client';
+import { DELETE_ARTICLE, GET_ARTICLE } from '../../queries/queries';
 
 function Article(props){
     const articleId = useLocation().pathname.split("/")[2];
     const navigate = useNavigate();
 
     const { loading, error, data } = useQuery(GET_ARTICLE, { variables: { id: articleId } });
-
+    const [deleteArticleMutation] = useMutation(DELETE_ARTICLE); 
     
     function deleteArticle(){
-      axios
-        .delete(`/articles/${articleId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      deleteArticleMutation({variables: {id: articleId, userId: props.userId, token: props.token  }})
+        .then(result=>{
+          navigate("/")
         })
-        .then((result) => {
-          navigate("/");
+        .catch( error => {
+          console.log(error);
         })
-        .catch((err) => {
-          console.log(err.response.data.error);
-        });
     }
 
     if(loading)
@@ -34,7 +27,6 @@ function Article(props){
 
     if(error)
       return <p> Something went wrong </p>
-
 
     if(data){
       return (

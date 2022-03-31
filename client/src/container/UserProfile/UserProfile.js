@@ -3,8 +3,8 @@ import ArticlePreview from '../../component/ArticlePreview/ArticlePreview';
 import Button from '../../component/Button/Button'
 import classes from './UserProfile.module.css'
 import {  useNavigate } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
-import { GET_USER } from '../../queries/queries';
+import { useMutation, useQuery } from '@apollo/client';
+import { DELETE_USER, GET_USER } from '../../queries/queries';
 
 function UserProfile(props){
     const navigate = useNavigate();
@@ -14,16 +14,16 @@ function UserProfile(props){
         navigate("/profile/edit");
     }
 
+    const [deleteUserMutation] = useMutation(DELETE_USER);
+
     function deleteProfile(){
-        axios.delete(`/users/${props.userId}`, {
-          headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-        })
+      deleteUserMutation({variables: {id: props.userId, token: props.token }})  
         .then( (result)=>{
-            navigate("/logout");
+          navigate("/logout");
         })
         .catch( (err)=>{
             console.log(err);
-        } )
+        })  
     }
 
     return (
