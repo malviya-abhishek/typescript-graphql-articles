@@ -76,3 +76,25 @@ mutation CreateArticle($id: ID! $token: String! $title: String! $content: String
   }
 }
 `;
+
+
+export const UPDATE_ARTICLE = gql`
+mutation UpdateArticle($id: ID! $userId: ID! $token: String! $title: String $content: String){
+  updateArticle(
+      id: $id
+      userId: $userId
+      token: $token
+      title: $title
+      content: $content
+  ){
+      id 
+      title
+      content
+      user{
+          id
+          name
+          email
+      }
+  }
+}
+`;

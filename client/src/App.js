@@ -14,6 +14,7 @@ import Logout from "./container/Logout/Logout"
 import CreateArticle from './container/CreateArticle/CreateArticle';
 import UserProfile from './container/UserProfile/UserProfile'
 import EditProfile from './container/EditProfile/EditProfile';
+import EditArticle from './container/EditArticle/EditArticle';
 
 function App() {
 
@@ -84,8 +85,7 @@ function App() {
           />
           <Route path="/createpost" element={<CreateArticle userId={userId} token={token} />} />
           <Route path="/articles/:articleId" element={<Article userId={userId} token={token} />} />
-          <Route path="/articles/:articleId/edit" element={<CreateArticle userId={userId} token={token} />} />
-
+          <Route path="/articles/:articleId/edit" element={<EditArticle userId={userId} token={token} />} />
         </Routes>
       </div>
     </Router>

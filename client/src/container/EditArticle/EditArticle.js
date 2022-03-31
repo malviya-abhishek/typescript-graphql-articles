@@ -1,14 +1,31 @@
 import { useState, useEffect } from "react";
 import Form from '../../component/Form/Form';
 import {useNavigate} from 'react-router-dom'
-import { useMutation } from "@apollo/client";
-import { CREATE_ARTICLE } from "../../queries/queries";
+import { useLocation } from "react-router-dom";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_ARTICLE, UPDATE_ARTICLE } from "../../queries/queries";
 
-function CreateArticle(props){
+function EditArticle(props){
   const navigate = useNavigate(); 
+  const {state} = useLocation();
   const [detail, setDetail] = useState({ title: "", content: "" });
-  const [error, setError] = useState("");
-  const [createArticle] = useMutation(CREATE_ARTICLE);
+  const [Error, setError] = useState("");
+
+  const [updateArticle] = useMutation(UPDATE_ARTICLE);
+
+  const { loading, error, data } = useQuery(GET_ARTICLE, { variables: { id: state.articleId } }, []);
+
+  if(data){
+    if(detail.title.length == 0 && detail.content.length == 0)
+    setDetail({
+      title: data.article.title,
+      content: data.article.content
+    });
+  }
+
+  if(error)
+    console.log(error);
+
 
   function changeHandler(e) {
       const name = e.target.name;
@@ -29,20 +46,19 @@ function CreateArticle(props){
         setError(errorMsg);
         return;
       }
-
-      createArticle({variables: {id: props.userId, token: props.token, title: detail.title, content: detail.content }})
-        .then( result => {
-          const t = result.data.addArticle.id;
-          navigate(`/articles/${t}`);
-        })
-        .catch( error => {
-          setError(JSON.stringify(error));
-        })
+    
+    updateArticle({variables: {id: state.articleId, token: props.token , userId: props.userId, title: detail.title, content: detail.content }})
+      .then( result => {
+        navigate(`/articles/${state.articleId}`);
+      })
+      .catch( error => {
+        setError(JSON.stringify(error));
+      });
   }
 
   const options = {
     formTitle: "Create Form",
-    errorMsg: error,
+    errorMsg: Error,
     changeHandler: changeHandler,
     uploadHandler: uploadHandler,
     btnText: "Post",
@@ -66,7 +82,7 @@ function CreateArticle(props){
 }
 
 
-export default CreateArticle;
+export default EditArticle;
 
 
 
