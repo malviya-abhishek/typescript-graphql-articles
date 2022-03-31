@@ -10,12 +10,8 @@ import { GET_ARTICLE } from '../../queries/queries';
 function Article(props){
     const articleId = useLocation().pathname.split("/")[2];
     const navigate = useNavigate();
-    const [article, setArticle] = useState({});
-    const userId = localStorage.getItem("userId");
 
     const { loading, error, data } = useQuery(GET_ARTICLE, { variables: { id: articleId } });
-
-    
 
     
     function deleteArticle(){
@@ -39,13 +35,14 @@ function Article(props){
     if(error)
       return <p> Something went wrong </p>
 
+
     if(data){
       return (
         <div className={classes["Article"]}>
         <div className={classes["title"]}> {data.article.title} </div>
         <div className={classes["content"]}> {data.article.content} </div>
         { 
-          parseInt(userId) === data.article.user.id ? 
+          props.userId === data.article.user.id ? 
           <div className={classes["btn-holder"]}>
             <Button  onClickHandler={deleteArticle} > Delete </Button>
             <Button green={true} onClickHandler={()=>{

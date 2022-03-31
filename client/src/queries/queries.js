@@ -56,3 +56,23 @@ query GetUser($id: ID!){
   }
 }
 `;
+
+export const CREATE_ARTICLE = gql`
+mutation CreateArticle($id: ID! $token: String! $title: String! $content: String!){
+  addArticle(
+      userId: $id
+      token: $token
+      title: $title
+      content: $content
+  ){
+      id 
+      title
+      content
+      user{
+          id
+          name
+          email
+      }
+  }
+}
+`;

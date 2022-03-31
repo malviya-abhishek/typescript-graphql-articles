@@ -82,9 +82,9 @@ function App() {
               />
             }
           />
-          <Route path="/createpost" element={<CreateArticle />} />
-          <Route path="/articles/:articleId" element={<Article />} />
-          <Route path="/articles/:articleId/edit" element={<CreateArticle />} />
+          <Route path="/createpost" element={<CreateArticle userId={userId} token={token} />} />
+          <Route path="/articles/:articleId" element={<Article userId={userId} token={token} />} />
+          <Route path="/articles/:articleId/edit" element={<CreateArticle userId={userId} token={token} />} />
 
         </Routes>
       </div>

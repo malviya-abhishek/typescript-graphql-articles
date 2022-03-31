@@ -3,6 +3,8 @@ import Form from '../../component/Form/Form';
 import axios from "../../axios";
 import {useNavigate} from 'react-router-dom'
 import { useLocation } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { CREATE_ARTICLE } from "../../queries/queries";
 
 function CreateArticle(props){
   const {state} = useLocation();
@@ -10,23 +12,25 @@ function CreateArticle(props){
   const [detail, setDetail] = useState({ title: "", content: "" });
   const [error, setError] = useState("");
 
-  useEffect( ()=>{
-    if(state?.toEdit){
-        axios
-          .get(`/articles/${state?.articleId}`)
-          .then((result) => {
-            const temp = {
-              title: result.data.title,
-              content: result.data.content,
-            };
-            setDetail(temp);
-          })
-          .catch((err) => {
-            console.log(err.response.data);
-          });
-    }
+  const [createArticle] = useMutation(CREATE_ARTICLE);
+
+  // useEffect( ()=>{
+  //   if(state?.toEdit){
+  //       axios
+  //         .get(`/articles/${state?.articleId}`)
+  //         .then((result) => {
+  //           const temp = {
+  //             title: result.data.title,
+  //             content: result.data.content,
+  //           };
+  //           setDetail(temp);
+  //         })
+  //         .catch((err) => {
+  //           console.log(err.response.data);
+  //         });
+  //   }
     
-   }, [state])
+  //  }, [state])
 
 
   function changeHandler(e) {
@@ -47,40 +51,33 @@ function CreateArticle(props){
       if(errorMsg.length){
         setError(errorMsg);
         return;
-
       }
 
-      const data = {
-          title: detail.title,
-          content: detail.content
-      }
+      
+
       if(state?.toEdit) {
-        const articleId  = state?.articleId;
-        axios
-          .put(`/articles/${articleId}`, data, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          })
-          .then((result) => {
-            navigate(`/articles/${articleId}`);
-          })
-          .catch((err) => {
-            setError(err.response.data.error);
-          });
+        // const articleId  = state?.articleId;
+        // axios
+        //   .put(`/articles/${articleId}`, data, {
+        //     headers: {
+        //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //     },
+        //   })
+        //   .then((result) => {
+        //     navigate(`/articles/${articleId}`);
+        //   })
+        //   .catch((err) => {
+        //     setError(err.response.data.error);
+          // });
       } else {
-        axios
-          .post("/articles", data, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+        createArticle({variables: {id: props.userId, token: props.token, title: detail.title, content: detail.content }})
+          .then( result => {
+            const t = result.data.addArticle.id;
+            navigate(`/articles/${t}`);
           })
-          .then((result) => {
-            navigate(`/articles/${result.data.id}`);
+          .catch( error => {
+            setError(JSON.stringify(error));
           })
-          .catch((err) => {
-            setError(err.response.data.msg);
-          });
       }
   }
 
