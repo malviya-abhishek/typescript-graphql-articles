@@ -34,7 +34,7 @@ const Mutation = new GraphQLObjectType({
   fields : {
     // Users
     addUser:{
-      type: UserType,
+      type: UserLoginType,
       args: AddUserArgs,
       resolve: AddUserResolve
     },

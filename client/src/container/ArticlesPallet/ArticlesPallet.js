@@ -1,38 +1,27 @@
-import {useState, useEffect} from 'react';
+import { useQuery } from '@apollo/client';
 
-import axios from '../../axios/index';
+import { GET_ARTICLES } from '../../queries/queries';
 import ArticlePreview from "../../component/ArticlePreview/ArticlePreview";
 
 function ArticlePallet(props){
+    const { loading, error, data } = useQuery(GET_ARTICLES);
 
-    const [list, setList] = useState([]);
+    if(error)
+      return <p> Error </p>
 
-    useEffect(()=>{
-        axios
-            .get("/articles")
-            .then((articles)=>{
-                const temp = [];
-                articles.data.forEach((article) => {
-                  temp.push(
-                    <ArticlePreview
-                      key={article.id}
-                      title={article.title}
-                      content={article.content}
-                      id={article.id}
-                    />
-                  );
-                });
-                setList(temp);
-            }).catch((err)=>{
-              console.log(err);
-            })
-    },[])
+    if(loading)
+      return <p> Loading </p>
 
-    return (
-      <div>
-        {list}
-      </div>
-    );
+    if(data)
+      return (
+        data.articles.map( article => 
+          <ArticlePreview 
+            key = {article.id} 
+            title = {article.title} 
+            content = {article.content}
+            id = {article.id}
+          />
+        ));
 }
 
 

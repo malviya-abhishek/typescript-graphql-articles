@@ -1,46 +1,15 @@
 import axios from '../../axios';
-import {useEffect, useState} from 'react';
 import ArticlePreview from '../../component/ArticlePreview/ArticlePreview';
 import Button from '../../component/Button/Button'
 import classes from './UserProfile.module.css'
 import {  useNavigate } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import { GET_USER } from '../../queries/queries';
 
 function UserProfile(props){
     const navigate = useNavigate();
-    const [user, setUser] = useState({});
-    const [userArticles, setUserArticles] = useState([]);
-
-    useEffect(( )=>{
-        axios
-            .get(`/users/${props.userId}`)
-            .then((result)=>{
-                setUser({...result.data})
-            })
-            .catch( (err)=>{
-                console.log(err);
-            });
-
-        axios
-            .get(`/users/${props.userId}/articles`)
-            .then((articles)=>{
-                const temp = [];
-                articles.data.forEach((article)=>{
-                    temp.push(
-                      <ArticlePreview
-                        key={article.id}
-                        title={article.title}
-                        content={article.content}
-                        id={article.id}
-                      />
-                    );
-                })
-                setUserArticles(temp);
-            })
-            .catch((err)=>{
-                console.log(err.response.data);
-            })
-    }, [props.userId]);
-
+    const { loading, error, data } = useQuery(GET_USER, { variables: { id: props.userId } });
+    
     function editProfile(){
         navigate("/profile/edit");
     }
@@ -60,11 +29,17 @@ function UserProfile(props){
     return (
       <div>
         <div className={classes["heading"]} >
-          <h2 className={classes["username"]}> Hi {user.name}! </h2>
+          <h2 className={classes["username"]}> Hi {data?.user.name}! </h2>
           <Button onClickHandler={ ()=> {deleteProfile()} }> Delete Profile </Button>
           <Button onClickHandler={ ()=> {editProfile()} }> Edit Profile </Button>
         </div>
-        {userArticles}
+        {data?.user.articles.map((article)=>(
+          <ArticlePreview
+            key={article.id}
+            title={article.title}
+            content={article.content}
+            id={article.id}
+          />))}
       </div>
     );
 }

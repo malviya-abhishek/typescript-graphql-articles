@@ -12,10 +12,12 @@ export const UsersResolve = (parents: any, args: any)=>{
   return db.User.findAll({ attributes: { exclude: ['password', "updatedAt", "createdAt"]} });
 }
 
-export const AddUserResolve = (parent: any, args: any)=>{
+export const AddUserResolve = async (parent: any, args: any)=>{
   const hashedPassword = crypto.pbkdf2Sync(args.password, "salt", 10000, 100, 'sha512').toString('hex');
   args.password = hashedPassword;
-  return db.User.create({...args});
+  const user =  await db.User.create({...args});
+  user.token = user.generateJWT();
+  return user;
 }
 
 export const UpdateUserResolve = async (parent: any, args: any)=>{

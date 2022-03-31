@@ -1,10 +1,13 @@
 import { useState } from "react";
 import Form from "../../component/Form/Form";
-import axios from "../../axios";
 import {useNavigate} from 'react-router-dom';
 import { emailValidate } from "../../services/email.services";
+import { useMutation } from "@apollo/client";
+import { CREATE_USER } from "../../queries/queries";
 
 function Signup(props) {
+  const [signupMutation] = useMutation(CREATE_USER);
+
   const navigate = useNavigate(); 
   const [detail, setDetail] = useState({ name: "", email: "", password: ""  });
   const [error, setError] = useState("");
@@ -35,28 +38,17 @@ function Signup(props) {
     }
 
 
-    const data = {
-      name: detail.name,
-      email: detail.email,
-      password: detail.password,
-    };
-
-
-    axios
-      .post("/users", data)
-      .then((result) => {
+    signupMutation({variables: {name: detail.name, email: detail.email, password: detail.password}}).
+      then((result)=>{
+        const t = result.data.addUser;
         props.setLogged(true);
-        props.setToken(result.data.token);
-        props.setUserId(result.data.id);
-        localStorage.setItem("token", result.data.token);
-        localStorage.setItem("userId", result.data.id);
+        props.setToken(t.token);
+        props.setUserId(t.id);
+        localStorage.setItem("token", t.token);
+        localStorage.setItem("userId", t.id);
         navigate("/");
-      })
-      .catch((err) => {
-          if(err.response.status === 500)
-            setError("Email is used");
-          else
-            setError(err.response.data.msg);
+      }).catch((error)=>{
+        console.log(error);
       });
   }
 

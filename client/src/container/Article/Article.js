@@ -4,6 +4,8 @@ import axios from '../../axios'
 import classes from './Article.module.css'
 import Button from '../../component/Button/Button';
 import { useNavigate } from "react-router-dom";
+import { useQuery } from '@apollo/client';
+import { GET_ARTICLE } from '../../queries/queries';
 
 function Article(props){
     const articleId = useLocation().pathname.split("/")[2];
@@ -11,22 +13,11 @@ function Article(props){
     const [article, setArticle] = useState({});
     const userId = localStorage.getItem("userId");
 
-    useEffect( ()=>{
-        axios
-        .get(`/articles/${articleId}`)
-        .then( (result) => {
-            const temp = {
-              title: result.data.title,
-              content: result.data.content,
-              userId: result.data.User.id
-            };
-            setArticle(temp);
-        })
-        .catch( err => {
-            console.log(err);
-        });
-    }, [articleId] )
+    const { loading, error, data } = useQuery(GET_ARTICLE, { variables: { id: articleId } });
 
+    
+
+    
     function deleteArticle(){
       axios
         .delete(`/articles/${articleId}`, {
@@ -42,14 +33,19 @@ function Article(props){
         });
     }
 
-    
-    return (
-      <div className={classes["Article"]}>
-        <div className={classes["title"]}> {article.title} </div>
-        <div className={classes["content"]}> {article.content} </div>
+    if(loading)
+      return <p> Loading </p>
 
+    if(error)
+      return <p> Something went wrong </p>
+
+    if(data){
+      return (
+        <div className={classes["Article"]}>
+        <div className={classes["title"]}> {data.article.title} </div>
+        <div className={classes["content"]}> {data.article.content} </div>
         { 
-          parseInt(userId) === article.userId ? 
+          parseInt(userId) === data.article.user.id ? 
           <div className={classes["btn-holder"]}>
             <Button  onClickHandler={deleteArticle} > Delete </Button>
             <Button green={true} onClickHandler={()=>{
@@ -59,7 +55,8 @@ function Article(props){
           : null 
         }
       </div>
-    );
+      )
+    }
 };
 
 
