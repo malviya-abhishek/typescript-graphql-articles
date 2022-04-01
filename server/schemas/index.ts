@@ -8,6 +8,7 @@ import {UserType, AddUserArgs, UserLoginType, UserLoginArgs, UserArgs, UpdateUse
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
+    // Users
     user:{
       type: UserType,
       args: UserArgs,
@@ -17,6 +18,7 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(UserType),
       resolve: UsersResolve
     },
+    // Articles
     article:{
       type: ArticleType,
       args: ArticleArgs,

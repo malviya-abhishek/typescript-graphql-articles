@@ -24,7 +24,7 @@ export const UpdateUserResolve = async (parent: any, args: any)=>{
   try{
     const user = await db.User.findByPk(args.id,{ attributes: { exclude: ['password', "updatedAt"]}});
     if(!user)
-      return {};
+      throw new Error("User does not exist");
     validJWT(args.token, args.id);
     if(args.password)
       args.password = crypto.pbkdf2Sync(args.password, "salt", 10000, 100, 'sha512').toString('hex');
@@ -35,6 +35,9 @@ export const UpdateUserResolve = async (parent: any, args: any)=>{
 
 export const DeleteUserResolve = async (parent: any, args: any)=>{
   try{
+    const user = await db.User.findByPk(args.id, { attributes: { exclude: ['password', "updatedAt"]}});
+    if(!user)
+      throw new Error("User does not exist");
     validJWT(args.token, args.id);
     await db.User.destroy( {where: {id : args.id} , cascade: true });
     return {msg: "User deleted"};
