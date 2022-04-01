@@ -25,9 +25,9 @@ function Navbar(props){
             )
         }
         
-        <div className={classes["search-bar"]} > 
+        {/* <div className={classes["search-bar"]} > 
           <  SearchBar />
-        </div>
+        </div> */}
       </div>
     );
 }
