@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Form from '../../component/Form/Form';
-import axios from "../../axios";
 import {useNavigate} from 'react-router-dom'
 import { emailValidate } from "../../services/email.services";
 import { LOGIN_USER } from "../../queries/queries";

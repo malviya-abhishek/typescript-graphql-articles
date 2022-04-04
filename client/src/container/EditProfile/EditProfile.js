@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Form from "../../component/Form/Form";
-import axios from "../../axios";
 import {useNavigate} from 'react-router-dom';
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_USER, UPDATE_USER } from "../../queries/queries";

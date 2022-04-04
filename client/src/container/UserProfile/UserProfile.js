@@ -1,4 +1,3 @@
-import axios from '../../axios';
 import ArticlePreview from '../../component/ArticlePreview/ArticlePreview';
 import Button from '../../component/Button/Button'
 import classes from './UserProfile.module.css'
